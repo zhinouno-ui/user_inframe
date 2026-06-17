@@ -50,6 +50,301 @@ html,body{height:100%;background:#000;color:var(--text);overflow:hidden}
 @media(max-width:640px){
   #panel{right:0;left:0;bottom:0;top:6vh;width:auto;height:auto;
     border-radius:22px 22px 0 0;border-left:none;border-right:none;border-bottom:none}
+  /* Subir el FAB por encima de la barra de navegación del casino (no taparla) */
+  #fab{bottom:78px;right:12px;padding:13px 18px;font-size:15px}
+  #opBubble{bottom:150px}
+}
+
+/* ── Header del panel ── */
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px;border-bottom:1px solid var(--line);flex-shrink:0;
+  background:var(--panel);
+}
+.panel-head h2{font-size:17px;font-weight:900;letter-spacing:.3px}
+.panel-head .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.head-close{background:none;border:none;color:var(--muted);font-size:26px;line-height:1;cursor:pointer;padding:0 4px}
+.head-close:hover{color:var(--text)}
+
+/* ── Cuerpo: el panel-body NO scrollea; cada vista maneja su propio scroll ── */
+.panel-body{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+#viewLogin,#viewRegistro{padding:18px;overflow-y:auto;flex:1;min-height:0}
+#viewApp{flex:1;display:flex;flex-direction:column;min-height:0}
+#tabCargar,#tabRetirar{flex:1;overflow-y:auto;padding:18px;min-height:0}
+/* El chat: chatBody scrollea adentro y el compose queda fijo (la barra de tabs siempre visible abajo) */
+#tabChat{flex:1;display:flex;flex-direction:column;padding:18px;min-height:0}
+
+/* ── Tabs (grandes, ícono + texto, para mayores) ── */
+.tabs{display:flex;border-top:1px solid var(--line);flex-shrink:0;background:var(--panel)}
+.tabs button{flex:1;background:none;border:none;color:var(--muted);padding:11px 6px 9px;
+  font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .ti{font-size:21px}
+.tabs button.active{color:#12b76a}
+.tabs button .badge-dot{position:absolute;transform:translate(14px,-6px);background:var(--red);
+  color:#fff;border-radius:999px;min-width:17px;height:17px;font-size:10px;display:flex;
+  align-items:center;justify-content:center;font-weight:800;padding:0 4px}
+
+/* ── Cards / forms (reutilizado de la landing actual) ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.card-title{font-size:16px;font-weight:800;margin-bottom:14px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+input,select,textarea{width:100%;background:#0d1117;border:1px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--text);font-size:16px;outline:none;transition:.2s}
+input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,90,254,.15)}
+input::placeholder{color:#484f58}
+.field{margin-bottom:14px}
+.field-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+.btn{display:block;width:100%;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;transition:.15s;margin-top:6px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-green{background:linear-gradient(135deg,#238636,#12b76a);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:14px;padding:11px}
+.alert{padding:12px 14px;border-radius:12px;font-size:13px;margin-bottom:14px;line-height:1.5}
+.alert-info{background:#1a2f6d;color:#79b8ff}
+.alert-ok{background:#0d3321;color:#3fb950}
+.alert-err{background:#3d1d1c;color:#f85149}
+.alert-warn{background:#3d2d00;color:#d29922}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge-green{background:#0d3321;color:#3fb950}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{border:none;border-top:1px solid var(--line);margin:16px 0}
+
+/* ── Chat ── */
+.chat-body{background:#0d1117;border:1px solid var(--line);border-radius:14px;flex:1;min-height:0;overflow-y:auto;padding:14px;margin-bottom:10px}
+.chat-compose,#tabChat .btn-ghost,#chatPreviewWrap{flex-shrink:0}
+.msg{max-width:82%;margin-bottom:10px;display:flex;flex-direction:column}
+.msg.user{align-items:flex-end;margin-left:auto}
+.msg.op{align-items:flex-start;margin-right:auto}
+.bubble{padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.4;word-break:break-word}
+.msg.user .bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg.op .bubble{background:var(--card2);color:var(--text);border-bottom-left-radius:4px}
+.bubble img{max-width:200px;border-radius:10px;margin-top:6px;display:block}
+.msg-meta{font-size:11px;color:var(--muted);margin-top:3px;padding:0 3px}
+.chat-compose{display:grid;grid-template-columns:1fr 46px;gap:8px;align-items:end}
+.chat-compose textarea{margin:0;min-height:46px;max-height:100px;resize:none}
+.send-btn{width:46px;height:46px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:19px;cursor:pointer}
+
+/* CBU card (mensajes de billetera del operador) */
+.bil-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:4px}
+.bil-nombre{font-weight:800;margin-bottom:8px}
+.bil-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.bil-label{font-size:11px;color:var(--muted)}
+.bil-val{font-weight:700;word-break:break-all}
+.bil-copy{background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}
+.bil-footer{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Burbuja flotante de mensaje del operador (sobre el FAB) */
+#opBubble{
+  display:none;position:fixed;right:16px;bottom:86px;z-index:10000;
+  max-width:320px;width:calc(100% - 32px);
+  background:#1a2035;border:1px solid rgba(61,90,254,.6);border-radius:16px;
+  padding:13px 15px;box-shadow:0 6px 32px rgba(0,0,0,.55);
+  flex-direction:column;gap:6px;animation:panelIn .25s ease;
+}
+@media(min-width:641px){#opBubble{max-width:340px}}
+
+/* Estado de carga/retiro (en proceso / aprobada) */
+.status-box{border-radius:16px;padding:20px;margin-bottom:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ══ Casino embebido (fondo) ══ -->
+<iframe id="casinoFrame" src="https://www.bet-300.pw/" allow="fullscreen"></iframe>
+
+<!-- ══ Botón flotante ══ -->
+<button id="fab" onclick="abrirPanel()"><span class="fab-ico">💰</span> Cargar / Retirar</button>
+
+<!-- ══ Burbuja flotante de mensaje del operador ══ -->
+<div id="opBubble">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11px;font-weight:700;color:#7c8dff;letter-spacing:.4px">💬 MENSAJE DEL OPERADOR</span>
+    <button onclick="document.getElementById('opBubble').style.display='none'" style="background:none;border:none;color:#666;font-size:18px;cursor:pointer">×</button>
+  </div>
+  <div id="opBubbleText" style="font-size:14px;line-height:1.45;color:#e6edf3"></div>
+  <button onclick="abrirPanel();irTab('chat')" style="background:rgba(61,90,254,.18);border:none;color:#7c8dff;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-start">Ver chat →</button>
+</div>
+
+<!-- ══ Backdrop + Panel overlay ══ -->
+<div id="backdrop" class="hidden" onclick="cerrarPanel()"></div>
+<div id="panel" class="hidden">
+
+  <div class="panel-head">
+    <div>
+      <h2 id="panelTitle">💰 Tu cuenta</h2>
+      <div class="sub" id="panelSub">Cargá o retirá sin salir del juego</div>
+    </div>
+    <button class="head-close" onclick="cerrarPanel()">×</button>
+  </div>
+
+  <!-- ── Cuerpo: login / registro / app ── -->
+  <div class="panel-body" id="panelBody">
+
+    <!-- LOGIN: ingresar usuario (manual) -->
+    <div id="viewLogin">
+      <div class="card">
+        <div class="card-title">👤 Ingresá tu usuario</div>
+        <div class="field">
+          <label>Usuario del casino</label>
+          <input id="inUsuario" placeholder="tu_usuario" autocomplete="off" onkeydown="if(event.key==='Enter')identificar()">
+          <div class="field-hint">Es el mismo usuario con el que entrás a jugar.</div>
+        </div>
+        <button class="btn btn-green" onclick="identificar()">Entrar</button>
+        <div id="loginMsg"></div>
+      </div>
+    </div>
+
+    <!-- REGISTRO: usuario nuevo (pide nombre + teléfono) -->
+    <div id="viewRegistro" class="hidden">
+      <div class="card">
+        <div class="card-title">📝 Completá tus datos</div>
+        <div class="alert alert-info">No te encontramos. Completá estos datos una sola vez para poder atenderte.</div>
+        <div class="field"><label>Usuario</label><input id="regUsuario" readonly style="opacity:.7"></div>
+        <div class="field"><label>Tu nombre</label><input id="regNombre" placeholder="Nombre y apellido"></div>
+        <div class="field"><label>Teléfono (WhatsApp)</label><input id="regTelefono" placeholder="Ej: 1123456789" inputmode="numeric"></div>
+        <button class="btn btn-green" onclick="registrar()" id="btnReg">Crear y entrar</button>
+        <button class="btn btn-ghost" onclick="volverLogin()">← Volver</button>
+        <div id="regMsg"></div>
+      </div>
+    </div>
+
+    <!-- APP: cargar / retirar / chat -->
+    <div id="viewApp" class="hidden">
+
+      <!-- TAB CARGAR -->
+      <div id="tabCargar">
+        <div id="cargaStatusCard" class="hidden"></div>
+        <div id="cargaFormCard">
+          <div class="card">
+            <div class="card-title">💸 Cargar fichas</div>
+            <div id="cargaBilletera" style="margin-bottom:14px"></div>
+            <div class="field">
+              <label>¿Cuánto querés cargar?</label>
+              <input id="cargaMonto" type="number" inputmode="numeric" placeholder="Ej: 5000" onkeydown="if(event.key==='Enter')enviarSolicitudCarga()">
+              <div class="field-hint" id="cargaMontoHint">Transferí a los datos de arriba y luego enviá la solicitud.</div>
+            </div>
+            <button class="btn btn-green" onclick="enviarSolicitudCarga()">Enviar solicitud de carga</button>
+            <div id="cargaMsg"></div>
+            <div class="field-hint" style="text-align:center;margin-top:10px">¿Ya transferiste? Mandá el comprobante por el 💬 chat.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB RETIRAR -->
+      <div id="tabRetirar" class="hidden">
+        <!-- Setup de datos bancarios (si faltan) -->
+        <div id="retiroDatosSetup" class="hidden">
+          <div class="card">
+            <div class="card-title">🏧 Datos para retirar</div>
+            <div class="alert alert-info">Necesitamos estos datos una sola vez para poder transferirte.</div>
+            <div class="field"><label>DNI</label><input id="setupDni" inputmode="numeric" placeholder="Sin puntos"></div>
+            <div class="field"><label>Nombre en la transferencia</label><input id="setupNombreTransf" placeholder="Titular de la cuenta"></div>
+            <div class="field"><label>CBU / CVU / Alias</label><input id="setupCbuAlias" placeholder="Donde querés cobrar"></div>
+            <button class="btn btn-primary" onclick="guardarDatosRetiro()">Guardar datos</button>
+            <div id="setupRetiroMsg"></div>
+          </div>
+        </div>
+        <!-- Estado pendiente -->
+        <div id="retiroStatusCard" class="hidden"></div>
+        <!-- Form de retiro -->
+        <div id="retiroFormCard" class="hidden">
+          <div class="card">
+            <div class="card-title">🏧 Retirar</div>
+            <div id="retiroDatosResumen" style="margin-bottom:14px"></div>
+            <div class="field">
+              <label>¿Cuánto querés retirar?</label>
+              <input id="retiroMonto" type="number" inputmode="numeric" placeholder="Ej: 10000" onkeydown="if(event.key==='Enter')enviarSolicitudRetiro()">
+            </div>
+            <button class="btn btn-primary" onclick="enviarSolicitudRetiro()">Solicitar retiro</button>
+            <button class="btn btn-ghost" onclick="editarDatosRetiro()">Cambiar mis datos bancarios</button>
+            <div id="retiroFormMsg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB CHAT -->
+      <div id="tabChat" class="hidden">
+        <div id="chatBody" class="chat-body"></div>
+        <div id="chatPreviewWrap" class="hidden" style="align-items:center;gap:10px;padding:8px;background:rgba(255,255,255,.05);border-radius:12px;margin-bottom:8px">
+          <img id="chatPreviewImg" src="" style="width:48px;height:48px;object-fit:cover;border-radius:8px">
+          <button onclick="quitarImagen()" style="background:none;border:none;color:#f85149;cursor:pointer;font-size:13px">Quitar imagen</button>
+        </div>
+        <div class="chat-compose">
+          <textarea id="chatInput" placeholder="Escribí tu mensaje..." rows="1"></textarea>
+          <button class="send-btn" onclick="enviarMensaje()">➤</button>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:8px;font-size:13px" onclick="document.getElementById('chatFile').click()">📎 Adjuntar comprobante</button>
+        <input id="chatFile" type="file" accept="image/*" class="hidden" onchange="tomarImagen()">
+      </div>
+
+    </div><!-- /viewApp -->
+  </div><!-- /panel-body -->
+
+  <!-- ── Tabs (solo visibles dentro de la app) ── -->
+  <div class="tabs hidden" id="appTabs">
+    <button id="navCargar"  class="active" onclick="irTab('cargar')"><span class="ti">💸</span>Cargar</button>
+    <button id="navRetirar" onclick="irTab('retirar')"><span class="ti">🏧</span>Retirar</button>
+    <button id="navChat"    onclick="irTab('chat')"><span class="ti" style="position:relative">💬<span id="chatBadge" class="badge-dot hidden">0</span></span>Chat</button>
+    <button id="navSalir"   onclick="cerrarSesion()"><span class="ti">🚪</span>Salir</button>
+  </div>
+
+</div><!-- /panel -->
+
+<script src="app.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Cargar / Retirar</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+:root{
+  --bg:#0d1117;--panel:#161b22;--card:#1c2128;--card2:#21262d;
+  --line:#30363d;--muted:#8b949e;--blue:#3d5afe;--green:#238636;
+  --red:#da3633;--yellow:#d29922;--text:#e6edf3;
+}
+html,body{height:100%;background:#000;color:var(--text);overflow:hidden}
+.hidden{display:none!important}
+
+/* ── El casino embebido ocupa TODO el fondo ── */
+#casinoFrame{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:1;background:#0d1117}
+
+/* ── Botón flotante grande (abrir overlay) ── */
+#fab{
+  position:fixed;right:16px;bottom:16px;z-index:10000;
+  background:linear-gradient(135deg,#238636,#12b76a);color:#fff;
+  border:none;border-radius:999px;padding:15px 22px;
+  font-size:16px;font-weight:900;letter-spacing:.3px;cursor:pointer;
+  box-shadow:0 6px 26px rgba(18,183,106,.5);
+  display:flex;align-items:center;gap:9px;
+  animation:fabPulse 2.4s infinite;
+}
+#fab:active{transform:scale(.96)}
+@keyframes fabPulse{0%,100%{box-shadow:0 6px 26px rgba(18,183,106,.5)}50%{box-shadow:0 6px 38px rgba(18,183,106,.85)}}
+#fab .fab-ico{font-size:20px}
+
+/* ── Backdrop ── */
+#backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10001;backdrop-filter:blur(2px)}
+
+/* ── Panel overlay (expande grande, NO pantalla completa en compu) ── */
+#panel{
+  position:fixed;z-index:10002;background:var(--bg);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 12px 50px rgba(0,0,0,.6);
+  /* Desktop: flota abajo a la derecha, grande pero no full */
+  right:16px;bottom:16px;width:430px;height:min(86vh,760px);
+  border:1px solid var(--line);border-radius:22px;
+  animation:panelIn .22s ease;
+}
+@keyframes panelIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* Móvil: hoja que sube y ocupa casi toda la pantalla (cómodo para dedos) */
+@media(max-width:640px){
+  #panel{right:0;left:0;bottom:0;top:6vh;width:auto;height:auto;
+    border-radius:22px 22px 0 0;border-left:none;border-right:none;border-bottom:none}
 }
 
 /* ── Header del panel ── */
