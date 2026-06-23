@@ -299,6 +299,7 @@ function renderUserGate(){
       <button class="quick green" onclick="startFlow('RETIRO')">🏧 Solicitar retiro <small>Enviá tu solicitud para revisión.</small></button>
       <button class="quick" onclick="startFlow('SOPORTE')">🆘 Soporte <small>Consultas, acceso o dudas.</small></button>
       <button class="quick" onclick="verEstado()">🧾 Ver estado <small>Consultá tu última solicitud.</small></button>
+      <button class="quick" style="grid-column:1/-1" onclick="startFlow('CLAVE')">🔑 Reiniciar clave <small>Pedí el reseteo de tu clave de juego.</small></button>
     </div>`;
   setComposeEnabled(false,"Elegí una opción para continuar.");
 }
@@ -606,6 +607,7 @@ function startFlow(tipo){
   if(tipo==="CARGA"){if(bloquearNuevaSolicitud("CARGA"))return;setComposeEnabled(false,"Completá el formulario.");renderCargaForm();}
   if(tipo==="RETIRO"){if(bloquearNuevaSolicitud("RETIRO"))return;setComposeEnabled(false,"Completá el formulario.");renderRetiroForm();}
   if(tipo==="SOPORTE"){renderSoporteForm();}
+  if(tipo==="CLAVE"){setComposeEnabled(false,"Completá el formulario.");renderClaveForm();}
 }
 
 async function renderCargaForm(){
@@ -746,6 +748,43 @@ function renderSoporteForm(){
   setComposeEnabled(true,"");
   setTimeout(()=>$("freeInput")?.focus(),80);
   setTimeout(()=>subscribePush(),1500);
+}
+
+// ── Reset de clave (CAMBIO_CLAVE) ─────────────────────────────────────────
+function renderClaveForm(){
+  $("messages").insertAdjacentHTML("beforeend",`<div id="formClaveActiva" class="form-box active-flow">
+    <div class="welcome-title" style="font-size:16px">🔑 Reiniciar clave</div>
+    <div class="welcome-txt" style="margin-bottom:10px">Pedí el reseteo de tu clave de juego. Si dejás el campo vacío, se resetea a la clave por defecto <b>12345a</b>.</div>
+    <div class="user-chip" style="margin-bottom:10px">👤 ${esc(state.usuario)}</div>
+    <label>Nueva clave (opcional)</label>
+    <input id="claveNueva" placeholder="Mínimo 6 caracteres · letras y números">
+    <button id="btnEnviarClave" class="action-btn" onclick="enviarSolicitudClave()">Solicitar reseteo de clave</button>
+    <button class="action-btn secondary-btn" style="margin-top:6px" onclick="startFlow('SOPORTE')">Necesito ayuda</button>
+  </div>`);
+  scrollBottom();
+}
+
+async function enviarSolicitudClave(){
+  const claveRaw=($("claveNueva")?.value||"").trim();
+  const clave=claveRaw||"12345a";
+  if(clave.length<6)return toast("La clave debe tener al menos 6 caracteres");
+  if(!/^[a-zA-Z0-9]+$/.test(clave))return toast("Solo letras y números, sin espacios ni símbolos");
+  const btn=$("btnEnviarClave");
+  if(btn){btn.disabled=true;btn.textContent="Enviando...";}
+  addMsg("Solicito reiniciar mi clave de juego","user");
+  cerrarFormActivo("formClaveActiva");
+  // No bloquea carga/retiro: el cambio de clave es independiente y se manda como una solicitud más.
+  const payload={usuario:state.usuario,pc_codigo:state.pcCodigo,public_code:state.publicCode,tipo:"CAMBIO_CLAVE",password_nuevo:clave};
+  let res=await rpc("landing_portal_v16_crear_solicitud",{p_public_code:state.publicCode,p_usuario:state.usuario,p_tipo:"CAMBIO_CLAVE",p_monto:0,p_titular:"",p_destino:null,p_mensaje:"Solicitud de CAMBIO_CLAVE",p_metadata:payload});
+  if(res.error){console.warn("[V16.5] clave v16 falló",res.error);res=await rpc("landing_crear_chat_v2_blindado",{p_public_code:state.publicCode,p_usuario:state.usuario,p_mensaje:"Solicitud de CAMBIO DE CLAVE",p_tipo:"CAMBIO_CLAVE",p_extra:payload});}
+  if(res.error){addMsg("No pudimos enviar la solicitud de cambio de clave. Escribinos por acá y un operador te ayuda.","bot");setComposeEnabled(true,"");return;}
+  const d=normalize(res.data)||res.data||{};
+  if(d.chat_id){state.chatId=String(d.chat_id);localStorage.setItem("bet300_chat_id",state.chatId);}
+  if(d.chat_token){state.chatToken=String(d.chat_token);localStorage.setItem("bet300_chat_token",state.chatToken);}
+  addMsg('Solicitud de cambio de clave enviada 🔑<br><span class="status-pill">En proceso</span><br>Un operador la procesará en breve. Te avisamos por este mismo chat.',"bot");
+  setComposeEnabled(true,"Podés agregar un comentario sobre tu solicitud.");
+  startChatPoll();startPortalThreadPoll();
+  setTimeout(()=>subscribePush(),1200);
 }
 
 // ── Mensajería libre ──────────────────────────────────────────────────────
