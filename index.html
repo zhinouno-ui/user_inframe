@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<meta name="theme-color" content="#f5c542">
+<meta name="theme-color" content="#0a0a12">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,84 +13,249 @@
 <title>BET300 · Portal V16.5</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-:root{--bg:#050510;--panel:#111222;--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:#a7adbd;--gold:#f5c542;--green:#18c964;--blue:#3d5afe;--shadow:0 18px 60px rgba(0,0,0,.45)}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text)}
-#appFrame{position:fixed;inset:0;width:100vw;height:100vh;border:0;background:#050510;z-index:1}
-.float-btn{position:fixed;right:18px;bottom:18px;z-index:20;border:none;border-radius:999px;padding:14px 18px;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),#ffe27a);color:#171200;font-weight:950;font-size:15px;cursor:pointer;box-shadow:0 12px 38px rgba(245,197,66,.32),0 14px 45px rgba(0,0,0,.45)}
-.widget{position:fixed;right:18px;bottom:84px;z-index:30;width:390px;max-width:calc(100vw - 24px);height:620px;max-height:calc(100vh - 105px);background:linear-gradient(180deg,rgba(25,26,44,.96),rgba(10,11,22,.98));border:1px solid rgba(255,255,255,.14);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;display:none;flex-direction:column;backdrop-filter:blur(16px)}
-.widget.open{display:flex}
-.widget-head{padding:16px;background:radial-gradient(circle at top right,rgba(245,197,66,.18),transparent 32%),linear-gradient(135deg,#17182b,#0c0d1a);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
-.brand-logo{font-size:22px;font-weight:950;letter-spacing:-1px}.brand-logo span:first-child{color:var(--gold)}.head-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.icon-btn{border:none;background:rgba(255,255,255,.09);color:#fff;border-radius:12px;width:34px;height:34px;cursor:pointer;font-size:18px}
-.widget-body{flex:1;overflow:auto;padding:14px;background:radial-gradient(circle at 20% 20%,rgba(61,90,254,.09),transparent 28%),radial-gradient(circle at 80% 55%,rgba(245,197,66,.07),transparent 30%),#0b0c18}
-.welcome-card,.form-box{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin-bottom:12px}
-.welcome-title{font-weight:950;font-size:18px;margin-bottom:6px}.welcome-txt{font-size:13px;color:#d7dbe7;line-height:1.35}
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
-.quick{border:1px solid rgba(255,255,255,.1);background:#15172a;color:#fff;border-radius:16px;padding:13px 10px;cursor:pointer;text-align:left;font-weight:900;min-height:68px}
-.quick small{display:block;color:var(--muted);font-size:11px;font-weight:600;margin-top:4px;line-height:1.25}.quick.gold{background:linear-gradient(135deg,#2b230d,#17172a);border-color:rgba(245,197,66,.35)}.quick.green{background:linear-gradient(135deg,#0d2b1a,#17172a);border-color:rgba(24,201,100,.28)}
-.msg{display:flex;flex-direction:column;margin-bottom:10px;max-width:88%}.msg.bot,.msg.sys{align-items:flex-start;margin-right:auto}.msg.user{align-items:flex-end;margin-left:auto}
-.bubble{padding:10px 12px;border-radius:16px;font-size:13px;line-height:1.36;word-break:break-word;box-shadow:0 8px 18px rgba(0,0,0,.18);white-space:pre-wrap}
-.msg.bot .bubble,.msg.sys .bubble{background:#1d2334;color:#f7f7fb;border-bottom-left-radius:5px;border:1px solid rgba(255,255,255,.04)}.msg.user .bubble{background:linear-gradient(135deg,#314bd8,#6879ff);color:#fff;border-bottom-right-radius:5px}.meta{font-size:10px;color:var(--muted);padding:3px 4px}
-label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#c7cbd6;font-weight:900;margin-bottom:5px}
-input,textarea{width:100%;border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;border-radius:13px;padding:12px;font-size:15px;margin-bottom:10px}textarea{resize:vertical;min-height:76px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.action-btn{width:100%;border:none;border-radius:14px;padding:13px 14px;font-weight:950;font-size:14px;cursor:pointer;background:linear-gradient(135deg,var(--gold),#ffe27a);color:#141008;margin-top:3px}.secondary-btn{background:#262b3d;color:#fff;border:1px solid rgba(255,255,255,.10)}
-.transfer-card{background:linear-gradient(180deg,#1a2035,#111728);border:1px solid rgba(245,197,66,.42);border-radius:18px;padding:13px;margin:10px 0;box-shadow:0 12px 28px rgba(0,0,0,.24)}
-.transfer-title{font-weight:950;color:var(--gold);font-size:16px;margin-bottom:10px}.transfer-field{background:#0e1525;border-radius:13px;padding:10px;margin-bottom:8px;border:1px solid rgba(255,255,255,.06)}.transfer-label{font-size:10px;color:#aeb4c3;text-transform:uppercase;font-weight:950;margin-bottom:4px}.transfer-value{font-size:14px;font-weight:950;color:#fff;word-break:break-all;margin-bottom:7px}
-.copy-btn{border:none;border-radius:11px;background:#252b3e;color:#fff;padding:9px 10px;font-size:12px;font-weight:900;cursor:pointer;width:100%}
-.file-label{display:flex;align-items:center;justify-content:center;gap:8px;background:#1d2334;border:1px dashed rgba(255,255,255,.20);border-radius:14px;padding:12px;color:#e8ebf5;font-size:13px;font-weight:900;cursor:pointer;margin-bottom:10px;text-transform:none;letter-spacing:0}
-.file-preview{display:none;background:rgba(255,255,255,.07);border-radius:13px;padding:8px;margin-bottom:10px;align-items:center;gap:10px}.file-preview.show{display:flex}.file-preview img{width:54px;height:54px;object-fit:cover;border-radius:10px}
-.status-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900;background:rgba(245,197,66,.12);color:#ffe188;border:1px solid rgba(245,197,66,.25);margin-top:8px}
-.widget-compose{border-top:1px solid var(--line);background:#111222;padding:11px;display:grid;grid-template-columns:1fr 44px;gap:8px;align-items:end;min-height:64px}
-#freeInput{min-height:42px;height:42px;max-height:86px;overflow:auto;margin:0;resize:none;border-radius:14px;font-size:14px}
-.send-btn{height:42px;min-width:44px;width:44px;padding:0;border:none;border-radius:14px;background:var(--blue);color:#fff;font-weight:950;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
-.clip-btn{height:42px;min-width:44px;width:44px;padding:0;border:none;border-radius:14px;background:rgba(255,255,255,.09);color:#c7cbd6;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
-.clip-btn:hover{background:rgba(255,255,255,.16)}
-.bubble img.chat-img{max-width:100%;border-radius:10px;margin-top:6px;display:block;cursor:pointer;border:1px solid rgba(255,255,255,.1)}
-.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:60;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);padding:12px 15px;border-radius:14px;font-weight:900;font-size:13px;display:none}.toast.show{display:block}
-@media(max-width:700px){.float-btn{right:14px;bottom:16px;padding:13px 15px}.widget{right:8px;left:8px;bottom:76px;width:auto;height:72vh;max-height:72vh;border-radius:22px}.quick-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.widget-head{padding:14px}}
-@media(max-width:390px){.quick-grid{grid-template-columns:1fr}.widget{height:75vh;max-height:75vh}}
+/* ════════════════════════════════════════════════════════════════════════
+   BET300 · UX rediseñada (V16.5)
+   La lógica (script) NO cambió: se conservan todos los id y clases que el JS usa.
+   ════════════════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#08080f; --surface:#13131f; --surface-2:#1b1b2b; --surface-3:#24243a;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
+  --text:#f4f5fb; --muted:#9298ad;
+  --gold:#f5c542; --gold-2:#ffd980; --green:#26d07c; --blue:#5b78ff; --danger:#ff5468;
+  --r:22px; --r-sm:14px; --shadow:0 26px 80px rgba(0,0,0,.55);
+  --font:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font)}
+body,button,input,textarea{font-family:var(--font)}
+::selection{background:rgba(245,197,66,.3)}
 
-.user-gate{background:rgba(255,255,255,.055);border:1px solid rgba(245,197,66,.22);border-radius:18px;padding:14px;margin-bottom:12px}
-.user-gate-title{font-weight:950;font-size:18px;margin-bottom:6px;color:#ffe188}
-.user-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.25);color:#ffe188;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:950;margin:8px 0 2px}
-.link-btn{border:none;background:transparent;color:#ffe188;font-size:12px;font-weight:900;cursor:pointer;text-decoration:underline;padding:0;margin-top:6px}
-.widget-compose.locked{display:flex!important;align-items:center;justify-content:center;color:#a7adbd;font-size:13px;font-weight:900;min-height:64px;text-align:center;padding:12px 14px}
-.widget-compose.locked #composeLockText{width:100%;line-height:1.35}
-.widget-compose:not(.locked){display:grid!important;grid-template-columns:44px 1fr 44px;gap:8px;align-items:end}
+/* Casino de fondo */
+#appFrame{position:fixed;inset:0;width:100vw;height:100vh;border:0;background:var(--bg);z-index:1}
+
+/* ── Botón flotante lanzador ───────────────────────────────────────────── */
+.float-btn{
+  position:fixed;right:20px;bottom:20px;z-index:20;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:11px;padding:0 20px 0 14px;height:58px;border-radius:999px;
+  background:linear-gradient(135deg,#ffdf7e,var(--gold) 55%,#e9a700);
+  color:#231900;font-weight:800;font-size:15px;letter-spacing:.2px;
+  box-shadow:0 14px 34px rgba(245,197,66,.42),0 10px 40px rgba(0,0,0,.5);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.float-btn:hover{transform:translateY(-2px)}
+.float-btn:active{transform:scale(.96)}
+.float-btn .fb-ico{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.16);font-size:18px}
+.float-btn .fb-sub{display:block;font-size:10px;font-weight:700;opacity:.7;letter-spacing:.3px;text-transform:uppercase;margin-top:-1px}
+
+/* ── Widget ────────────────────────────────────────────────────────────── */
+.widget{
+  position:fixed;right:20px;bottom:90px;z-index:30;
+  width:404px;max-width:calc(100vw - 28px);height:640px;max-height:calc(100vh - 116px);
+  background:linear-gradient(180deg,#15151f,#0c0c15);
+  border:1px solid var(--line-2);border-radius:26px;box-shadow:var(--shadow);
+  overflow:hidden;display:none;flex-direction:column;
+  transform-origin:bottom right;
+}
+.widget.open{display:flex;animation:popIn .26s cubic-bezier(.2,.9,.25,1)}
+@keyframes popIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+
+/* Header */
+.widget-head{
+  position:relative;flex-shrink:0;padding:16px 16px 15px;display:flex;align-items:center;gap:12px;
+  background:radial-gradient(140% 120% at 90% -20%,rgba(245,197,66,.22),transparent 50%),linear-gradient(135deg,#1b1c2c,#101019);
+  border-bottom:1px solid var(--line);
+}
+.head-avatar{width:42px;height:42px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--gold),#e6a400);color:#221900;font-weight:900;font-size:13px;letter-spacing:-.5px;
+  box-shadow:0 6px 16px rgba(245,197,66,.3)}
+.head-info{flex:1;min-width:0}
+.brand-logo{font-size:17px;font-weight:900;letter-spacing:-.3px;line-height:1.1}
+.brand-logo span:first-child{color:var(--gold)}
+.head-sub{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+.head-sub .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(38,208,124,.18)}
+.icon-btn{border:none;background:rgba(255,255,255,.07);color:#cfd3e0;border-radius:12px;width:36px;height:36px;cursor:pointer;font-size:20px;line-height:1;transition:background .15s}
+.icon-btn:hover{background:rgba(255,255,255,.14)}
+
+/* Banner conexión */
+#connBanner{background:linear-gradient(90deg,#3a0d12,#4a1118);color:#ffb3bd;font-size:12px;font-weight:700;padding:8px 16px;align-items:center;gap:8px;border-bottom:1px solid rgba(255,84,104,.25);flex-shrink:0}
+
+/* Body */
+.widget-body{flex:1;overflow-y:auto;padding:16px;scroll-behavior:smooth;
+  background:radial-gradient(120% 80% at 15% 0%,rgba(91,120,255,.10),transparent 40%),radial-gradient(120% 80% at 100% 30%,rgba(245,197,66,.07),transparent 42%),var(--bg)}
+.widget-body::-webkit-scrollbar{width:8px}
+.widget-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:8px}
+.widget-body::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.18)}
+
+.hidden{display:none!important}
+
+/* ── Tarjetas base ─────────────────────────────────────────────────────── */
+.welcome-card,.form-box,.user-gate{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.user-gate{border-color:rgba(245,197,66,.22)}
+.user-gate.pending-mode{border-color:rgba(245,197,66,.4);background:linear-gradient(180deg,rgba(245,197,66,.10),rgba(245,197,66,.03))}
+.user-gate-title{font-weight:900;font-size:19px;margin-bottom:8px;letter-spacing:-.3px}
+.welcome-title{font-weight:900;font-size:19px;margin-bottom:6px;letter-spacing:-.3px}
+.welcome-txt{font-size:13.5px;color:#cfd3e2;line-height:1.5}
+.flow-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
+.form-box.submitted{display:none!important}
+.main-menu-disabled{display:none!important}
+
+/* Chip de usuario */
+.user-chip{display:inline-flex;align-items:center;gap:7px;background:rgba(245,197,66,.13);border:1px solid rgba(245,197,66,.3);
+  color:var(--gold-2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:800;margin:10px 0 2px}
+.link-btn{border:none;background:transparent;color:var(--gold-2);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0;margin-top:10px;display:inline-block}
+.link-btn:hover{color:var(--gold)}
+
+/* ── Menú de acciones rápidas ──────────────────────────────────────────── */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+.quick{
+  position:relative;border:1px solid var(--line-2);background:linear-gradient(170deg,#1e1e30,#161623);
+  color:var(--text);border-radius:18px;padding:15px 14px;cursor:pointer;text-align:left;font-weight:800;font-size:14.5px;
+  min-height:80px;line-height:1.25;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;overflow:hidden;
+}
+.quick::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 100% 0%,rgba(255,255,255,.06),transparent 60%);pointer-events:none}
+.quick:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.32)}
+.quick:active{transform:translateY(-1px) scale(.99)}
+.quick small{display:block;color:var(--muted);font-size:11.5px;font-weight:600;margin-top:6px;line-height:1.35}
+.quick.gold{background:linear-gradient(165deg,#33290f,#1a1726);border-color:rgba(245,197,66,.4)}
+.quick.gold:hover{border-color:rgba(245,197,66,.7)}
+.quick.green{background:linear-gradient(165deg,#0f3322,#161a26);border-color:rgba(38,208,124,.36)}
+.quick.green:hover{border-color:rgba(38,208,124,.6)}
+
+/* ── Inputs ────────────────────────────────────────────────────────────── */
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#aab0c4;font-weight:800;margin-bottom:6px}
+input,textarea{
+  width:100%;border:1px solid var(--line-2);background:#0e0e19;color:var(--text);
+  border-radius:var(--r-sm);padding:13px 14px;font-size:15px;margin-bottom:11px;transition:border-color .15s,box-shadow .15s;
+}
+input::placeholder,textarea::placeholder{color:#5a607a}
+input:focus,textarea:focus{outline:none;border-color:rgba(245,197,66,.65);box-shadow:0 0 0 3px rgba(245,197,66,.16)}
+textarea{resize:vertical;min-height:76px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── Botones ───────────────────────────────────────────────────────────── */
+.action-btn{
+  width:100%;border:none;border-radius:var(--r-sm);padding:14px;font-weight:900;font-size:14.5px;cursor:pointer;margin-top:4px;
+  background:linear-gradient(135deg,#ffdf7e,var(--gold) 60%,#eaa800);color:#241a00;
+  box-shadow:0 10px 24px rgba(245,197,66,.26);transition:transform .15s,box-shadow .15s,filter .15s;
+}
+.action-btn:hover{filter:brightness(1.04);box-shadow:0 14px 30px rgba(245,197,66,.34)}
+.action-btn:active{transform:scale(.985)}
+.action-btn:disabled{opacity:.6;cursor:default;box-shadow:none}
+.secondary-btn{background:#23233a;color:var(--text);border:1px solid var(--line-2);box-shadow:none}
+.secondary-btn:hover{filter:none;background:#2b2b46;box-shadow:none}
+
+/* ── Mensajes (chat) ───────────────────────────────────────────────────── */
+.msg{display:flex;flex-direction:column;margin-bottom:12px;max-width:90%;animation:msgIn .22s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.bot,.msg.sys{align-items:flex-start;margin-right:auto}
+.msg.user{align-items:flex-end;margin-left:auto}
+.bubble{padding:11px 14px;border-radius:18px;font-size:13.5px;line-height:1.45;word-break:break-word;white-space:pre-wrap;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.msg.bot .bubble,.msg.sys .bubble{background:var(--surface-2);color:#eef0f7;border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.user .bubble{background:linear-gradient(135deg,#4f6bff,#7b8cff);color:#fff;border-bottom-right-radius:6px}
+.meta{font-size:10.5px;color:var(--muted);padding:4px 5px 0}
+.bubble img.chat-img{max-width:100%;border-radius:12px;margin-top:8px;display:block;cursor:pointer;border:1px solid var(--line-2)}
+.status-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;
+  background:rgba(245,197,66,.14);color:var(--gold-2);border:1px solid rgba(245,197,66,.3);margin:8px 0 2px}
+
+/* ── Tarjeta de transferencia ──────────────────────────────────────────── */
+.transfer-card{background:linear-gradient(180deg,#211f12,#14121c);border:1px solid rgba(245,197,66,.45);border-radius:18px;padding:15px;margin:12px 0;box-shadow:0 14px 30px rgba(0,0,0,.3)}
+.transfer-title{font-weight:900;color:var(--gold);font-size:15.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.transfer-field{background:#0c0c16;border-radius:13px;padding:11px 12px;margin-bottom:9px;border:1px solid var(--line)}
+.transfer-label{font-size:10px;color:#9aa0b4;text-transform:uppercase;font-weight:800;letter-spacing:.5px;margin-bottom:5px}
+.transfer-value{font-size:15px;font-weight:800;color:#fff;word-break:break-all;margin-bottom:9px;letter-spacing:.2px}
+.copy-btn{border:none;border-radius:11px;background:#26263e;color:#fff;padding:10px;font-size:12.5px;font-weight:800;cursor:pointer;width:100%;transition:background .15s}
+.copy-btn:hover{background:#32324f}
+.copy-btn:active{background:var(--blue)}
+
+/* ── Pendiente ─────────────────────────────────────────────────────────── */
+.pending-box{background:linear-gradient(180deg,rgba(245,197,66,.1),rgba(245,197,66,.03));border:1px solid rgba(245,197,66,.3);border-radius:var(--r);padding:16px;margin:14px 0}
+.pending-title{font-weight:900;color:var(--gold-2);font-size:16px;margin-bottom:7px}
+.pending-text{font-size:13px;color:#cfd3e2;line-height:1.5}
+.pending-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.pending-actions .action-btn{margin:0;flex:1;min-width:130px}
+.pending-only-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.pending-only-actions button{margin:0}
+
+/* ── Compose ───────────────────────────────────────────────────────────── */
+.widget-compose{flex-shrink:0;border-top:1px solid var(--line);background:#0f0f1a;padding:12px;min-height:66px}
+.widget-compose.locked{display:flex!important;align-items:center;justify-content:center;color:var(--muted);font-size:13px;font-weight:700;text-align:center;padding:14px 16px}
+.widget-compose.locked #composeLockText{width:100%;line-height:1.4}
+.widget-compose:not(.locked){display:grid!important;grid-template-columns:44px 1fr 46px;gap:9px;align-items:end}
 .widget-compose:not(.locked) #composeLockText{display:none}
 .widget-compose.locked textarea,.widget-compose.locked button,.widget-compose.locked .clip-btn{display:none!important}
-#imgPreviewBar{display:none;background:#111222;padding:6px 11px 2px;border-top:1px solid rgba(255,255,255,.07)}
-#imgPreviewBar .img-bar-inner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:10px;padding:5px 8px}
-#imgPreviewBar img{width:34px;height:34px;object-fit:cover;border-radius:6px;flex-shrink:0}
-#imgPreviewBar span{font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#imgPreviewBar button{border:none;background:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:0 2px;flex-shrink:0}
-.flow-note{font-size:12px;color:#a7adbd;line-height:1.35;margin-top:8px}
-.form-box.submitted{display:none!important}
-.pending-box{background:rgba(245,197,66,.09);border:1px solid rgba(245,197,66,.25);border-radius:18px;padding:14px;margin:12px 0}
-.pending-title{font-weight:950;color:#ffe188;font-size:16px;margin-bottom:6px}
-.pending-text{font-size:13px;color:#d7dbe7;line-height:1.38}
-.pending-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.pending-actions .action-btn{margin:0;flex:1;min-width:130px}
-.main-menu-disabled{display:none!important}
-.user-gate.pending-mode{border-color:rgba(245,197,66,.35);background:rgba(245,197,66,.08)}
-.pending-only-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.pending-only-actions button{margin:0}
-@media(max-width:390px){.pending-only-actions{grid-template-columns:1fr}}
+#freeInput{min-height:44px;height:44px;max-height:96px;overflow:auto;margin:0;resize:none;border-radius:14px;font-size:14px;padding:11px 13px}
+.send-btn{height:44px;width:46px;padding:0;border:none;border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:linear-gradient(135deg,#5b78ff,#7b8cff);color:#fff;box-shadow:0 8px 18px rgba(91,120,255,.35);transition:transform .15s}
+.send-btn:active{transform:scale(.92)}
+.clip-btn{height:44px;width:44px;padding:0;border:none;border-radius:14px;background:rgba(255,255,255,.07);color:#aeb3c6;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.clip-btn:hover{background:rgba(255,255,255,.15)}
+
+/* Preview de imagen (oculto por inline display:none; el JS lo muestra con display:"") */
+#imgPreviewBar{display:flex;align-items:center;background:#0f0f1a;padding:8px 12px;border-top:1px solid var(--line);flex-shrink:0}
+#imgPreviewBar .img-bar-inner{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.06);border-radius:11px;padding:6px 9px;width:100%}
+#imgPreviewBar img{width:36px;height:36px;object-fit:cover;border-radius:8px;flex-shrink:0}
+#imgPreviewBar span{font-size:11.5px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#imgPreviewBar button{border:none;background:none;color:var(--muted);cursor:pointer;font-size:21px;line-height:1;padding:0 2px;flex-shrink:0}
+
+/* Helpers heredados (por compatibilidad con HTML inyectado) */
+.file-label{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface-2);border:1px dashed var(--line-2);border-radius:14px;padding:12px;color:#e8ebf5;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:11px}
+.file-preview{display:none;background:rgba(255,255,255,.06);border-radius:13px;padding:8px;margin-bottom:11px;align-items:center;gap:10px}
+.file-preview.show{display:flex}.file-preview img{width:54px;height:54px;object-fit:cover;border-radius:10px}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:106px;transform:translateX(-50%) translateY(10px);z-index:60;
+  background:#16161f;color:#fff;border:1px solid var(--line-2);box-shadow:var(--shadow);
+  padding:13px 18px;border-radius:14px;font-weight:800;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  .float-btn{right:14px;bottom:16px;height:54px;padding:0 17px 0 12px}
+  .widget{right:10px;left:10px;bottom:80px;width:auto;height:74vh;max-height:74vh;border-radius:24px}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+  .quick-grid{grid-template-columns:1fr}
+  .pending-only-actions{grid-template-columns:1fr}
+  .float-btn .fb-text{display:none}
+  .float-btn{padding:0;width:54px;justify-content:center;gap:0}
+  .float-btn .fb-ico{margin:0}
+  .widget{height:80vh;max-height:80vh}
+}
 </style>
 </head>
 <body>
 <iframe id="appFrame" src="https://bet-300.pw" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
-<button id="floatBtn" class="float-btn" onclick="toggleWidget(true)"><span>💬</span><span>Cajero / Soporte</span></button>
+
+<button id="floatBtn" class="float-btn" onclick="toggleWidget(true)">
+  <span class="fb-ico">💬</span>
+  <span class="fb-text">Cajero / Soporte<span class="fb-sub">Cargas · Retiros · Ayuda</span></span>
+</button>
+
 <section id="widget" class="widget">
-  <div class="widget-head"><div><div class="brand-logo"><span>BET</span><span>300</span></div><div class="head-sub">Centro de asistencia integrado</div></div><button class="icon-btn" onclick="toggleWidget(false)">×</button></div>
-  <div id="connBanner" style="display:none;background:#450a0a;color:#fca5a5;font-size:12px;font-weight:900;padding:7px 14px;align-items:center;gap:8px;border-bottom:1px solid rgba(239,68,68,.25);flex-shrink:0"><span>⚠</span><span>Sin conexión · Reconectando...</span></div>
+  <div class="widget-head">
+    <div class="head-avatar">B300</div>
+    <div class="head-info">
+      <div class="brand-logo"><span>BET</span><span>300</span> · Cajero</div>
+      <div class="head-sub"><span class="dot"></span> En línea · respondemos al instante</div>
+    </div>
+    <button class="icon-btn" onclick="toggleWidget(false)">×</button>
+  </div>
+
+  <div id="connBanner" style="display:none"><span>⚠</span><span>Sin conexión · Reconectando...</span></div>
+
   <div id="widgetBody" class="widget-body">
     <div id="userGate" class="user-gate"></div>
     <div id="mainMenu" class="welcome-card hidden"></div>
     <div id="messages"></div>
   </div>
-  <div id="imgPreviewBar"><div class="img-bar-inner"><img id="imgPreviewThumb" src="" alt=""><span id="imgPreviewName"></span><button onclick="clearComposerImage()">×</button></div></div>
+
+  <div id="imgPreviewBar" style="display:none"><div class="img-bar-inner"><img id="imgPreviewThumb" src="" alt=""><span id="imgPreviewName"></span><button onclick="clearComposerImage()">×</button></div></div>
+
   <div id="composeBox" class="widget-compose locked">
     <div id="composeLockText">Elegí una opción para continuar.</div>
     <button class="clip-btn" onclick="$('composeFileInput').click()" title="Adjuntar imagen">📎</button>
@@ -99,6 +264,7 @@ input,textarea{width:100%;border:1px solid rgba(255,255,255,.12);background:#fff
     <button class="send-btn" onclick="sendFreeMessage()">➤</button>
   </div>
 </section>
+
 <div id="toast" class="toast"></div>
 <script>
 const SUPABASE_URL = "https://pjvvyvfcwjoocjqvdror.supabase.co";
